@@ -76,6 +76,7 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (92, 92, 92)
 YELLOW = (255, 255, 0)
+DARK_BLUE = (0, 0 , 255)
 
 f = 0
 aph = 0
@@ -121,12 +122,15 @@ while running:
                     menu = 3
             elif menu == 1:
                 if main_menu.collidepoint(event.pos):
-                    menu = 0
                     f = 0
                     aph = 0
+                    icon = daytime[0]
+                    menu = 0
             elif menu == 2:
                 if replay_button.collidepoint(event.pos):
                     menu = 1
+                elif main_menu.collidepoint(event.pos):
+                    menu = 0
             elif menu == 3:
                 if yes.collidepoint(event.pos):
                     if yes.collidepoint(event.pos):
@@ -150,13 +154,13 @@ while running:
     if menu == 0:
         #menu screen
         screen.blit(new_menu, [0, 0])
-        pygame.draw.rect(screen, GREY, simulation_button)
+        pygame.draw.rect(screen, DARK_BLUE, simulation_button)
         replay_m = font_two.render("Simulation", True, WHITE)
         screen.blit(replay_m, [530, 420])
         if simulation_button.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, WHITE, simulation_button, 5)
         
-        pygame.draw.rect(screen, GREY, self_assessment)
+        pygame.draw.rect(screen, DARK_BLUE, self_assessment)
         assessment_m = font_two.render("Self Assessment", True, WHITE)
         screen.blit(assessment_m, [477, 570])
         
@@ -202,8 +206,8 @@ while running:
         if main_menu.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, WHITE, main_menu, 5)
             
-        mb = font.render("Menu", True, WHITE)
-        screen.blit(mb, [37, 32])
+        mb = font_three.render("Menu", True, WHITE)
+        screen.blit(mb, [30, 25])
         
         if time_of_day == 5 or time_of_day == 17:
             icon = daytime[2]
@@ -215,11 +219,23 @@ while running:
         screen.blit(icon, [0, 60])
         
     elif menu == 2:
-        pygame.draw.rect(screen, GREY, replay_button)
+        pygame.draw.rect(screen, DARK_BLUE, replay_button)
         replay_m = font_two.render("Replay", True, WHITE)
         screen.blit(replay_m, [570, 420])
+
+        if replay_button.collidepoint(pygame.mouse.get_pos()):
+            pygame.draw.rect(screen, BLACK, replay_button, 5)
+        
+        pygame.draw.rect(screen, GREY, main_menu)
+        if main_menu.collidepoint(pygame.mouse.get_pos()):
+            pygame.draw.rect(screen, BLACK, main_menu, 5)
+            
+        mb = font_three.render("Menu", True, WHITE)
+        screen.blit(mb, [30, 25])
+        
         f = 0
         aph = 0
+        icon = daytime[0]
     
     elif menu == 3:
         pygame.draw.rect(screen, YELLOW, [0, 0, 1280, 100])
@@ -253,7 +269,7 @@ while running:
         end_rect = end_m.get_rect(center = (1280 / 2, 400))
         screen.blit(end_m, [end_rect.x, end_rect.y])
         
-        pygame.draw.rect(screen, GREY, main_menu)
+        pygame.draw.rect(screen, DARK_BLUE, main_menu)
         if main_menu.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, BLACK, main_menu, 5)
             
