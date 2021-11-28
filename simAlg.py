@@ -10,12 +10,9 @@ def people(loc, sizeTreshold):
 		if os.path.getsize(loc + f'\\{filename}') > sizeTreshold:
 			f = open(loc + f'\\{filename}', 'r').read().strip()
 			f = f[:f.index('\n')]
-			uid, date, lat, lon = f.split(',')
-			people[int(filename[:filename.index('.')])] = [False, float(lat), float(lon)]
+			uid, date, lon, lat = f.split(',')
+			people[int(filename[:filename.index('.')])] = [False, float(lon), float(lat)]
 	return people
-
-#def distance(long1, lat1, long2, lat2):
-	#return sqrt((long1-long2)**2 + (lat1-lat2)**2)
 
 def store(folder, data, time):
 	with open(f'{folder}\\{time.replace(":", " ")}.pkl', 'wb') as f:
@@ -25,42 +22,47 @@ def store(folder, data, time):
 print('Formatting Data...\n')
 with open('COVIDdata2.pkl', 'rb') as f:
 	df = pickle.load(f).sort_index(axis = 0)
+	df.ffill(inplace = True)
+	f.close()
+
+with open('allInteractions.pkl', 'rb') as f:
+	dfTime = pickle.load(f).sort_index(axis = 0)
 	f.close()
 
 #print(df)
 
 print('Initializing Infections...\n')
-people = people(os.getcwd() + '\\taxi_log_2008_by_id', 10000)
+df = df.T
+people = df.to_dict()
+for key in people:
+	for k in people[key]:
+		appList = list(people[key][k])
+		appList.append(False)
+		#print(appList)
+		people[key][k] = appList
+		#print(people[key])
+
 infections = 10
 for i in range(infections):
-	people[random.choice(list(people.keys()))][0] = True
+	people['2008-02-02 13:30'][random.randint(0, 3000)][2] = True
 
 dataFolder = os.getcwd() + '\\spreadData'
 
 print('Starting Simulation...\n')
 #treshold = 0.00005
-couple = []
-i = 0
-for time in data:
-	i += 1
 
-	for p1 in data[time]:
-		long1, lat1 = p1[1], p1[2]
-		people[p1[0]][1] = long1
-		people[p1[0]][2] = lat1
+dfTime = dfTime.T
 
-		for p2 in people:
-			if (p1[0] != p2) and (people[p1[0]][0] ^ people[p2][0]):
-				long2, lat2 = people[p2][1], people[p2][2]
-				dist = distance(long1, lat1, long2, lat2)
+for i in range(len(dfTime.columns.values.tolist())):
+	time = dfTime.columns[i]
+	iIdx = np.where(dfTime.iloc[:, i] != False & dfTime.iloc[:, i].eq(dfTime.iloc[:, i].shift(axis = 'index')), dfTime.iloc[:, i], False)
+	print(iIdx)
 
-				if dist < treshold and [p1, p2] in couple:
-					people[p1[0]][0] = True
-					people[p2][0] = True
-					infections += 1
+	for j in range(len(iIdx)):
+		if people[time][j][2] and iIdx[j] != False:
+			people[time][j][2] = True
+			people[time][iIdx[j]][2] = True
+			infections += 1
 
-				elif dist < treshold:
-					couple.append(p1, p2)
-
-	store(dataFolder, people, time)
+	store(dataFolder, people[time], time)
 	print(f'{time}: {infections} infections')
