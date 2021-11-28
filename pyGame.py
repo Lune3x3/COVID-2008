@@ -233,10 +233,10 @@ while running:
         
         pygame.draw.rect(screen, GREY, main_menu)
         if main_menu.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(screen, WHITE, main_menu, 5)
+            pygame.draw.rect(screen, BLACK, main_menu, 5)
             
         mb = font_three.render("Menu", True, WHITE)
-        screen.blit(mb, [37, 32])
+        screen.blit(mb, [30, 25])
         
     pygame.display.flip()
 
