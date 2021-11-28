@@ -6,17 +6,23 @@ pygame.init()
 x = -2738.7646
 y = 977.266
 
-background_image = pygame.image.load(f'maps_shot.png')
+background_image = pygame.image.load('maps_shot.png')
 IMAGE_SMALL = pygame.transform.scale(background_image, (1280, 1024))
 
-menu_image = pygame.image.load(f'ray.png')
-new_menu = pygame.transform.scale(menu_image, (2000, 1024))
+menu_image = pygame.image.load('covid.jpg')
+new_menu = pygame.transform.scale(menu_image, (1280, 1024))
 
-sun_image = pygame.image.load(f'sun.png')
-moon_image = pygame.image.load(f'moon.png')
-sundown_image = pygame.image.load(f'sundown.png')
+sun_image = pygame.image.load('sun.png')
+moon_image = pygame.image.load('moon.png')
+sundown_image = pygame.image.load('sundown.png')
 daytime = [sun_image, moon_image, sundown_image]
 icon = daytime[0]
+
+csign = pygame.image.load('csign.png')
+c_sign = pygame.transform.scale(csign, (320, 170))
+
+cell = pygame.image.load('cell.png')
+c_cell = pygame.transform.scale(cell, (160, 160))
 
 q_1 = ['Are you currently experiencing any of these issues?', 
 '- Severe difficulty breathing', 
@@ -69,6 +75,7 @@ BLUE = (20, 100, 255)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GREY = (92, 92, 92)
+YELLOW = (255, 255, 0)
 
 f = 0
 aph = 0
@@ -81,6 +88,7 @@ yes = pygame.Rect(400, 800, 200, 100)
 no = pygame.Rect(700, 800, 200, 100)
 simulation_button = pygame.Rect(470, 400, 340, 100)
 self_assessment = pygame.Rect(470, 550, 340, 100)
+previous = pygame.Rect(125, 145, 170, 30)
 
 day_night = pygame.Rect(0, 0, 1280, 1024)
 
@@ -128,6 +136,9 @@ while running:
                     if q == 5:
                         menu = 4
                     q += 1
+                    
+                elif previous.collidepoint(event.pos) and q != 0:
+                    q -= 1
                         
             elif menu == 4:
                 if main_menu.collidepoint(event.pos):
@@ -138,19 +149,19 @@ while running:
     
     if menu == 0:
         #menu screen
-        screen.blit(new_menu, [-300, 0])
+        screen.blit(new_menu, [0, 0])
         pygame.draw.rect(screen, GREY, simulation_button)
         replay_m = font_two.render("Simulation", True, WHITE)
         screen.blit(replay_m, [530, 420])
         if simulation_button.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(screen, BLACK, simulation_button, 5)
+            pygame.draw.rect(screen, WHITE, simulation_button, 5)
         
         pygame.draw.rect(screen, GREY, self_assessment)
         assessment_m = font_two.render("Self Assessment", True, WHITE)
         screen.blit(assessment_m, [477, 570])
         
         if self_assessment.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(screen, BLACK, self_assessment, 5)
+            pygame.draw.rect(screen, WHITE, self_assessment, 5)
         
     elif menu == 1:
         screen.blit(IMAGE_SMALL, [0, 0])
@@ -211,12 +222,23 @@ while running:
         aph = 0
     
     elif menu == 3:
+        pygame.draw.rect(screen, YELLOW, [0, 0, 1280, 100])
+        assess_title = font_two.render("COVID-19 Self Assessment", True, BLACK)
+        screen.blit(assess_title, [350, 20])
+        
+        screen.blit(c_sign, [100, 600])
+        screen.blit(c_cell, [1000, 300])
+        
+        if previous.collidepoint(pygame.mouse.get_pos()):
+            pygame.draw.line(screen, BLUE, [125, 175], [295, 175], 2)
             
+        prev = font_three.render('Previous page', True, BLUE)
+        screen.blit(prev, [125, 140])
+        
         y_offset = 0
         for i in range(len(all_q[q])):
             questions = font_three.render(all_q[q][i], True, BLACK)
-            text_rect = questions.get_rect(center = (1280 / 2, 100))
-            screen.blit(questions, [text_rect.x, text_rect.y + y_offset])
+            screen.blit(questions, [20, 200 + y_offset])
             y_offset += 50
         
         pygame.draw.rect(screen, BLUE, yes)
