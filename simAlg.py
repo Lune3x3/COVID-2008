@@ -55,14 +55,19 @@ dfTime = dfTime.T
 
 for i in range(len(dfTime.columns.values.tolist())):
 	time = dfTime.columns[i]
+	#iIdx = np.where(dfTime.iloc[:, i] != False, dfTime.iloc[:, i], False)
 	iIdx = np.where(dfTime.iloc[:, i] != False & dfTime.iloc[:, i].eq(dfTime.iloc[:, i].shift(axis = 'index')), dfTime.iloc[:, i], False)
-	print(iIdx)
+
+	#print(iIdx)
 
 	for j in range(len(iIdx)):
 		if people[time][j][2] and iIdx[j] != False:
 			people[time][j][2] = True
 			people[time][iIdx[j]][2] = True
 			infections += 1
+	if i % 60 == 0:
+		people[time][random.randint(0, 3000)][2] = True
+		infections += 1
 
 	store(dataFolder, people[time], time)
 	print(f'{time}: {infections} infections')
