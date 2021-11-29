@@ -25,7 +25,7 @@ cell = pygame.image.load('cell.png')
 c_cell = pygame.transform.scale(cell, (160, 160))
 
 q_1 = ['Are you currently experiencing any of these issues?', 
-'- Severe difficulty breathing', 
+'- Severe difficulty breathing',
 '- Severe chest pain',
 '- Feeling confused or unsure of where you are',
 '- Losing consciousness']
@@ -106,7 +106,6 @@ def grab(filename):
 
 files = os.listdir(os.getcwd() + '\\spreadData')
 
-
 menu = 0
 running = True
 while running:
@@ -120,6 +119,7 @@ while running:
                     menu = 1
                 elif self_assessment.collidepoint(event.pos):
                     menu = 3
+
             elif menu == 1:
                 if main_menu.collidepoint(event.pos):
                     f = 0
